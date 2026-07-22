@@ -1,4 +1,0 @@
-User-agent: *
-Disallow: /_astro/
-
-Sitemap: https://xiaohuangushi.com/sitemap-index.xml
