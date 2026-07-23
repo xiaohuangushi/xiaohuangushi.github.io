@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@xiaohuangushi</title>
+    <style>
+        /* 全局重置 & 字体 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: #f6f8fa;
+            color: #24292f;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+            line-height: 1.5;
+        }
+
+        /* 卡片容器 */
+        .card {
+            max-width: 720px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+            padding: 3rem 2.5rem;
+            transition: transform 0.2s ease;
+            text-align: center;
+        }
+
+        /* 头像 / 图标 */
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #e1e4e8, #d0d5dc);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .avatar svg {
+            width: 64px;
+            height: 64px;
+            fill: #57606a;
+        }
+
+        /* 主标题 */
+        h1 {
+            font-size: 2.4rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.4rem;
+            color: #0d1117;
+        }
+
+        .username {
+            font-size: 1.2rem;
+            font-weight: 400;
+            color: #57606a;
+            margin-bottom: 1.2rem;
+            display: inline-block;
+            background: #f0f2f5;
+            padding: 0.2rem 1rem;
+            border-radius: 30px;
+        }
+
+        /* 分隔装饰 */
+        .divider {
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #6e40c9, #3b8cff);
+            margin: 1.2rem auto 1.8rem;
+            border-radius: 10px;
+        }
+
+        /* 描述文案 */
+        .bio {
+            font-size: 1.1rem;
+            color: #24292f;
+            max-width: 480px;
+            margin: 0 auto 2rem;
+            opacity: 0.85;
+        }
+
+        /* 链接按钮组 */
+        .links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.8rem 1.2rem;
+            margin: 2rem 0 1.6rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.65rem 1.6rem;
+            border-radius: 40px;
+            background: #f0f2f5;
+            color: #24292f;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+            border: 1px solid transparent;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+            position: relative;   /* 为二维码悬浮层定位 */
+        }
+
+        .btn:hover {
+            background: #e1e4e8;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.06);
+        }
+
+        .btn-primary {
+            background: #0d1117;
+            color: #ffffff;
+            border-color: #0d1117;
+        }
+
+        .btn-primary:hover {
+            background: #24292f;
+            border-color: #24292f;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #d0d7de;
+        }
+
+        .btn-outline:hover {
+            background: #f6f8fa;
+            border-color: #8b949e;
+        }
+
+        /* 公众号二维码悬浮层 */
+        .qr-wrapper {
+            position: relative;
+			/* 让wrapper只包裹按钮内容，不破坏flex布局 */
+            display: inline-flex;    
+            align-items: center;
+        }
+
+        /* 二维码卡片 — 默认隐藏，悬停显示 */
+        .qr-popup {
+            position: absolute;
+			/* 在按钮上方 */
+            bottom: calc(100% + 18px);      
+            left: 50%;
+            transform: translateX(-50%) scale(0.92);
+            background: #ffffff;
+            padding: 12px 12px 8px 12px;
+            border-radius: 20px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(2px);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.25s cubic-bezier(0.2, 0, 0, 1), 
+                        transform 0.25s cubic-bezier(0.2, 0, 0, 1),
+                        visibility 0.25s;
+			/* 防止遮挡其他点击 */
+            pointer-events: none;           
+            z-index: 10;
+			/* 固定宽度，二维码自适应 */
+            width: 160px;                  
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* 小三角指示器 (朝下) */
+        .qr-popup::after {
+            content: '';
+            position: absolute;
+			/* 在卡片底部 */
+            top: 100%;                    
+            left: 50%;
+            transform: translateX(-50%);
+            border: 8px solid transparent;
+            border-top-color: #ffffff;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.04));
+        }
+
+        /* 二维码图片 — 请替换 src 为你自己的二维码图片地址 */
+        .qr-popup img {
+            display: block;
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            background: #fafbfc;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            aspect-ratio: 1/1;
+            object-fit: contain;
+        }
+
+        /* 二维码下方小字 */
+        .qr-popup .qr-label {
+            font-size: 0.7rem;
+            color: #57606a;
+            letter-spacing: 0.3px;
+            background: #f6f8fa;
+            padding: 2px 12px;
+            border-radius: 30px;
+            font-weight: 450;
+            margin-top: 2px;
+            opacity: 0.8;
+        }
+
+        /* 悬停时显示二维码 */
+        .qr-wrapper:hover .qr-popup {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) scale(1);
+			/* 悬停时可交互，但不需要点击 */
+            pointer-events: auto;           
+        }
+
+        /* 按钮本身在悬停时保持原有样式，不额外变化 (已经由 .btn:hover 控制) */
+        .qr-wrapper .btn {
+            /* 保证按钮样式与普通按钮一致 */
+        }
+
+        /* 底部 footer */
+        .footer {
+            margin-top: 2.8rem;
+            font-size: 0.9rem;
+            color: #57606a;
+            border-top: 1px solid #eaeef2;
+            padding-top: 1.8rem;
+            display: flex;
+            justify-content: center;
+            gap: 1.8rem;
+            flex-wrap: wrap;
+        }
+
+        .footer a {
+            color: #0969da;
+            text-decoration: none;
+            font-weight: 450;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        .footer span {
+            opacity: 0.5;
+        }
+
+        /* 响应式微调 */
+        @media (max-width: 480px) {
+            .card {
+                padding: 2rem 1.5rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .avatar {
+                width: 96px;
+                height: 96px;
+            }
+
+            .avatar svg {
+                width: 48px;
+                height: 48px;
+            }
+
+            .links {
+                gap: 0.6rem;
+            }
+
+            .btn {
+                padding: 0.5rem 1.2rem;
+                font-size: 0.95rem;
+            }
+
+            /* 移动端二维码适当缩小 */
+            .qr-popup {
+                width: 130px;
+                padding: 8px 8px 6px 8px;
+                bottom: calc(100% + 14px);
+            }
+            .qr-popup .qr-label {
+                font-size: 0.6rem;
+            }
+        }
+
+        /* 超小屏额外保护 */
+        @media (max-width: 380px) {
+            .qr-popup {
+                width: 110px;
+                padding: 6px 6px 4px 6px;
+                bottom: calc(100% + 12px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <!-- 头像占位：GitHub 风格的猫咪图标 (Octicon) -->
+        <div class="avatar">
+            <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+            </svg>
+        </div>
+
+        <!-- 用户名 & 标题 -->
+        <h1>你好，世界 👋</h1>
+        <div class="username">@xiaohuangushi 🚀 GitHub Pages</div>
+
+        <div class="divider"></div>
+
+        <p class="bio">
+            欢迎来到我的个人小站。<br>
+            这里将存放我的项目、想法或任何有趣的东西。
+        </p>
+
+        <!-- 主要链接区 -->
+        <div class="links">
+            <a href="https://github.com/xiaohuangushi" class="btn btn-primary" target="_blank">
+                <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" style="margin-right: 2px;">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                </svg>GitHub
+            </a>
+            <a href="https://mp.xiaohuangushi.com" class="btn btn-outline" target="_blank">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                  <path fill="#4A90D9" d="M5 3C4.44772 3 4 3.44772 4 4V20C4 20.5523 4.44772 21 5 21H15.7574L20 16.7574V4C20 3.44772 19.5523 3 19 3H5Z" />
+                  <path d="M15 3V8H20" fill="#4A90D9"/>
+                  <path d="M15 3V8C15 8.55228 15.4477 9 16 9H20V16.7574L15.7574 21H5V4C5 3.44772 5.44772 3 6 3H15Z" fill="#4A90D9"/>
+                  <path d="M8 7H12" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+                  <path d="M8 11H14" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+                  <path d="M8 15H12" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>笔记
+            </a>
+            
+            <!-- 公众号按钮 + 二维码悬浮 -->
+            <div class="qr-wrapper">
+                <a href="https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzA5MjEzNzgzMA==" class="btn btn-outline" target="_blank">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                        <path fill="#07C160" d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 0 1 .213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 0 0 .167-.054l1.903-1.114a.864.864 0 0 1 .717-.098 10.16 10.16 0 0 0 2.837.403c.276 0 .543-.027.811-.05-.857-2.578.157-4.972 1.932-6.446 1.703-1.415 3.882-1.98 5.853-1.838-.576-3.583-4.196-6.348-8.596-6.348zM5.785 5.991c.842 0 1.524.682 1.524 1.524s-.682 1.524-1.524 1.524-1.524-.682-1.524-1.524.682-1.524 1.524-1.524zm4.998 0c.842 0 1.524.682 1.524 1.524s-.682 1.524-1.524 1.524-1.524-.682-1.524-1.524.682-1.524 1.524-1.524zm5.723 2.567c-3.328 0-6.028 2.422-6.028 5.41 0 2.989 2.7 5.411 6.028 5.411.788 0 1.548-.157 2.246-.438a.68.68 0 0 1 .565.078l1.59.928a.366.366 0 0 0 .183.054c.168 0 .304-.137.304-.305 0-.057-.014-.113-.031-.167l-.345-1.265a.613.613 0 0 1 .117-.578c1.235-1.435 1.938-3.148 1.938-4.974 0-2.988-2.7-5.411-6.027-5.411zm-3.175 5.91c.527 0 .953.427.953.953 0 .527-.426.953-.953.953a.955.955 0 0 1-.953-.953c0-.526.427-.953.953-.953zm3.175 0c.527 0 .953.427.953.953 0 .527-.426.953-.953.953a.955.955 0 0 1-.953-.953c0-.526.427-.953.953-.953z"/>
+                    </svg>公众号
+                </a>
+                <!-- 二维码弹出层 -->
+                <div class="qr-popup">
+                    <!-- 替换下方 src 为你的公众号二维码图片地址
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Crect width='400' height='400' fill='%23ffffff'/%3E%3Crect x='40' y='40' width='320' height='320' fill='%23f0f0f0' rx='16'/%3E%3Ccircle cx='200' cy='160' r='48' fill='%2307C160'/%3E%3Cpath d='M160 160 L240 160 L200 200 Z' fill='%23ffffff'/%3E%3Crect x='120' y='240' width='160' height='20' rx='10' fill='%2357606a'/%3E%3Crect x='140' y='270' width='120' height='12' rx='6' fill='%238b949e'/%3E%3Crect x='160' y='290' width='80' height='8' rx='4' fill='%23d0d7de'/%3E%3C/svg%3E"
+                         alt="公众号 · 晓欢故事" 
+                         loading="lazy"
+                         width="160" 
+                         height="160">
+					 -->
+                    <img src="https://cdn.jsdelivr.net/gh/xiaohuangushi/xiaohuangushi@main/MP_png/qrcode_for_gh_5c7427b9c5b3+400.png"
+                         alt="公众号 · 晓欢故事" 
+                         loading="lazy"
+                         width="160" 
+                         height="160">
+                    <span class="qr-label">扫码关注 · 晓欢故事</span>
+                </div>
+            </div>
+            <!-- 公众号二维码悬浮结束 -->
+
+            <!-- 其他按钮（注释掉项目，保留占位） -->
+            <!-- 
+            <a href="#" class="btn btn-outline" target="_blank">
+                <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" style="margin-right: 2px;">
+                    <path d="M8 1.5c-3.58 0-6.5 2.92-6.5 6.5 0 2.87 1.86 5.31 4.44 6.17.32.06.44-.14.44-.31v-1.14c-1.8.39-2.18-.86-2.18-.86-.29-.74-.71-.94-.71-.94-.58-.39.04-.38.04-.38.64.05.98.66.98.66.57.97 1.49.69 1.85.53.06-.41.22-.69.4-.85-1.41-.16-2.89-.7-2.89-3.12 0-.69.25-1.25.65-1.69-.07-.16-.28-.8.06-1.67 0 0 .53-.17 1.74.65.5-.14 1.04-.21 1.58-.21.54 0 1.08.07 1.58.21 1.21-.82 1.74-.65 1.74-.65.34.87.13 1.51.06 1.67.4.44.65 1 .65 1.69 0 2.42-1.48 2.96-2.89 3.12.23.2.44.59.44 1.19v1.75c0 .17.12.37.44.31 2.58-.86 4.44-3.3 4.44-6.17 0-3.58-2.92-6.5-6.5-6.5z"/>
+                </svg>项目
+            </a>
+            -->
+        </div>
+
+        <!-- 底部信息 -->
+        <div class="footer">
+            <span>⚡ 由 GitHub Pages 驱动</span>
+            👤 <a href="#">关于</a>
+            🤝 <a href="#">联系</a>
+            📅 <a href="#">2026</a>
+        </div>
+    </div>
+</body>
+</html>
