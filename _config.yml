@@ -1,10 +1,34 @@
 # xiaohuangushi_config.yml
 # github.com/shenjuexiao
-# 20261026
+# 20261115
 
+# github.com/pages-themes/primer
 # _config.yml
+
+# The title of your site
 title: XIAOHUANGUSHI · 晓欢故事
+# A short description of your site's purpose
 description: 从复杂人生到简单生活。
+
+url: "https://xiaohuangushi.com"
+baseurl: ""
+timezone: Asia/Shanghai
+
+# true or false (unquoted) to indicate whether to provide a download URL
+show_downloads: false
+# Your Google Analytics tracking ID
+google_analytics:
+
+remote_theme: pages-themes/primer@v0.6.0
+# add this line to the plugins list if you already have one
+plugins:
+  - jekyll-github-metadata
+  - jekyll-remote-theme
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+# 链接
+permalink: pretty
 
 # 包含的文件（Jekyll 默认会忽略以下划线开头的文件，
 # 但这里列出的文件需要被处理）
@@ -13,3 +37,6 @@ include:
   
 # 排除的文件和目录（不参与 Jekyll 构建）
 exclude:
+  - _config.yml
+  - .github/
+  
