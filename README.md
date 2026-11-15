@@ -32,9 +32,8 @@
 - 🐙 GitHub 组织：[github.com/xiaohuangushi](https://github.com/xiaohuangushi)
 - 📝 笔记小站：[xiaohuangushi.cn](https://xiaohuangushi.cn)
 - 💬 公众号：[扫码关注 · 晓欢故事](https://cdn.jsdelivr.net/gh/xiaohuangushi/.github@main/MP_png/qrcode_for_gh_5c7427b9c5b3+400.png)
-- 📷 公众号二维码：
-![扫码关注 · 晓欢故事](https://cdn.jsdelivr.net/gh/xiaohuangushi/.github@main/MP_png/qrcode_for_gh_5c7427b9c5b3+400.png)
-
+- 📷 公众号二维码：扫码关注 · 晓欢故事  
+![扫码关注 · 晓欢故事](https://cdn.jsdelivr.net/gh/xiaohuangushi/.github@main/mp_png/qrcode_for_gh_5c7427b9c5b3+400.png)
 
 ## 🤝 联系我们
 
